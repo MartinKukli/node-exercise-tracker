@@ -39,7 +39,7 @@ exports.addUser = async (body) => {
   };
 };
 
-exports.addExercise = async (body) => {
+exports.addExercise = async (params, body) => {
   const getDate = () => {
     const date = !!body.date ? new Date(body.date) : new Date();
 
@@ -52,7 +52,7 @@ exports.addExercise = async (body) => {
     date: getDate(),
   };
 
-  const user = await UserModel.findByIdAndUpdate(body.uid, {
+  const user = await UserModel.findByIdAndUpdate(params._id, {
     $push: {
       log,
     },

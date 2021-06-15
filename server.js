@@ -38,7 +38,7 @@ app.post("/api/users", async (req, res) => {
 });
 
 app.post("/api/users/:_id/exercises", async (req, res) => {
-  const user = await tracker.addExercise(req.body);
+  const user = await tracker.addExercise(req.params, req.body);
 
   res.json(user);
 });
