@@ -26,7 +26,7 @@ app.get("/api/users", async (req, res) => {
 });
 
 app.get("/api/users/:_id/logs", async (req, res) => {
-  const user = await tracker.getUserLog(req.params);
+  const user = await tracker.getUserLog(req.params, req.query);
 
   res.json(user);
 });

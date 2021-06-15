@@ -65,6 +65,27 @@ exports.addExercise = async (params, body) => {
   };
 };
 
-exports.getUserLog = async (params) => {
-  return await UserModel.findById(params._id);
+exports.getUserLog = async (params, query) => {
+  const getQuery = () => {
+    const mongoQuery = { _id: params._id };
+
+    if (mongoQuery.from) {
+      mongoQuery.log.$gte = new Date(query.from).toDateString();
+    }
+
+    if (mongoQuery.to) {
+      mongoQuery.log.$lte = new Date(query.to).toDateString();
+    }
+
+    return mongoQuery;
+  };
+
+  const user = await UserModel.findOne(getQuery());
+
+  return {
+    _id: user._id,
+    username: user.username,
+    count: user.log.length,
+    log: !!query.limit ? user.log.slice(0, query.limit) : user.log,
+  };
 };
