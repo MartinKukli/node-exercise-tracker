@@ -4,6 +4,7 @@ mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    useFindAndModify: false,
   })
   .catch(console.error);
 
@@ -39,24 +40,31 @@ exports.addUser = async (body) => {
 };
 
 exports.addExercise = async (body) => {
-  await UserModel.updateOne(
-    {
-      _id: body.uid,
-    },
-    {
-      $push: {
-        log: {
-          description: body.description || "",
-          duration: parseFloat(body.duration) || 0,
-          date: body.date || Date.now().toString(),
-        },
-      },
-    }
-  );
+  const getDate = () => {
+    const date = !!body.date ? new Date(body.date) : new Date();
 
-  return await UserModel.findById(body.uid);
+    return date.toDateString();
+  };
+
+  const log = {
+    description: body.description,
+    duration: parseFloat(body.duration),
+    date: getDate(),
+  };
+
+  const user = await UserModel.findByIdAndUpdate(body.uid, {
+    $push: {
+      log,
+    },
+  });
+
+  return {
+    _id: user._id,
+    username: user.username,
+    ...log,
+  };
 };
 
 exports.getUserLog = async (params) => {
-  return await UserModel.findById(params.uid);
+  return await UserModel.findById(params._id);
 };
