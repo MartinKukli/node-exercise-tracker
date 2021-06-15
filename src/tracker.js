@@ -33,8 +33,8 @@ exports.addUser = async (body) => {
   });
 
   return {
-    _id: user._id,
     username: user.username,
+    _id: user._id,
   };
 };
 
