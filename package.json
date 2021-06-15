@@ -1,6 +1,6 @@
 {
 	"name": "node-exercise-tracker",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"description": "A REST API project, part of Free Code Camp's curriculum",
 	"main": "server.js",
 	"scripts": {
@@ -13,7 +13,7 @@
 		"mongoose": "^5.12.13"
 	},
 	"repository": {
-		"url": "https://github.com/freeCodeCamp/boilerplate-project-exercisetracker"
+		"url": "https://https://github.com/MartinKukli/node-exercise-tracker"
 	},
 	"license": "MIT",
 	"keywords": [
