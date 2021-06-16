@@ -1,27 +1,4 @@
-const mongoose = require("mongoose");
-
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-  })
-  .catch(console.error);
-
-const Schema = mongoose.Schema;
-
-const LogSchema = new Schema({
-  description: String,
-  duration: Number,
-  date: String,
-});
-
-const UserSchema = new Schema({
-  username: String,
-  log: [LogSchema],
-});
-
-const UserModel = mongoose.model("users", UserSchema);
+const UserModel = require("./connection");
 
 exports.getUsers = async () => {
   return await UserModel.find({}, "username _id");
@@ -66,26 +43,28 @@ exports.addExercise = async (params, body) => {
 };
 
 exports.getUserLog = async (params, query) => {
-  const getQuery = () => {
-    const mongoQuery = { _id: params._id };
+  const user = await UserModel.findOne(createQuery(params, query));
 
-    if (mongoQuery.from) {
-      mongoQuery.log.$gte = new Date(query.from).toDateString();
-    }
-
-    if (mongoQuery.to) {
-      mongoQuery.log.$lte = new Date(query.to).toDateString();
-    }
-
-    return mongoQuery;
-  };
-
-  const user = await UserModel.findOne(getQuery());
+  const log = user.log.slice(0, query.limit) ?? user.log;
 
   return {
     _id: user._id,
     username: user.username,
     count: user.log.length,
-    log: !!query.limit ? user.log.slice(0, query.limit) : user.log,
+    log,
   };
 };
+
+function createQuery(params, query) {
+  const mongoQuery = { _id: params._id };
+
+  if (mongoQuery.from) {
+    mongoQuery.log.$gte = new Date(query.from).toDateString();
+  }
+
+  if (mongoQuery.to) {
+    mongoQuery.log.$lte = new Date(query.to).toDateString();
+  }
+
+  return mongoQuery;
+}

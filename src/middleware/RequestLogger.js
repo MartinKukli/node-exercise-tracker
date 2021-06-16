@@ -1,5 +1,5 @@
 const requestLogger = function (req, res, next) {
-  console.group("Logger");
+  console.group("Request:");
 
   console.log(`Method: ${req.method}, path: ${req.path}`);
 
