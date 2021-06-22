@@ -1,7 +1,7 @@
-const UserModel = require("./connection");
+const UserModel = require('./connection');
 
 exports.getUsers = async () => {
-  return await UserModel.find({}, "username _id");
+  return await UserModel.find({}, 'username _id');
 };
 
 exports.addUser = async (body) => {
@@ -45,7 +45,7 @@ exports.addExercise = async (params, body) => {
 exports.getUserLog = async (params, query) => {
   const user = await UserModel.findOne(createQuery(params, query));
 
-  const log = user.log.slice(0, query.limit) ?? user.log;
+  const log = user.log.slice(0, query.limit) || user.log;
 
   return {
     _id: user._id,
